@@ -7,6 +7,11 @@ import logging
 import re
 import time
 import urllib.parse
+import pickle
+import json
+import os.path
+import sys
+import threading
 
 try:
     # Python 3.4.
@@ -47,6 +52,7 @@ class Crawler:
     This manages two sets of URLs: 'urls' and 'done'.  'urls' is a set of
     URLs seen, and 'done' is a list of FetchStatistics.
     """
+
     def __init__(self, roots,
                  exclude=None, strict=True,  # What to crawl.
                  max_redirect=10, max_tries=4,  # Per-url limits.
@@ -59,8 +65,26 @@ class Crawler:
         self.max_tries = max_tries
         self.max_tasks = max_tasks
         self.q = Queue(loop=self.loop)
+        self.count = 0
         self.seen_urls = set()
+        if os.path.exists('seenurls'):
+            with open('seenurls', 'r') as f:
+                for line in f:
+                    self.seen_urls.add(json.loads(line))
         self.done = []
+        # if os.path.exists('done'):
+        #     with open('done', 'r') as f:
+        #         for line in f:
+        #             data = json.loads(line)
+        #             self.record_statistic(FetchStatistic(url=data[0],
+        #                                                  next_url=data[1],
+        #                                                  status=data[2],
+        #                                                  exception=data[3],
+        #                                                  size=data[4],
+        #                                                  content_type=data[5],
+        #                                                  encoding=data[6],
+        #                                                  num_urls=data[7],
+        #                                                  num_new_urls=data[8]))
         self.session = aiohttp.ClientSession(loop=self.loop)
         self.root_domains = set()
         for root in roots:
@@ -76,14 +100,28 @@ class Crawler:
                     self.root_domains.add(host)
                 else:
                     self.root_domains.add(lenient_host(host))
+
         for root in roots:
             self.add_url(root)
         self.t0 = time.time()
         self.t1 = None
+        self.saving = True
+        self.printit()
+
+    def printit(self):
+        if self.saving:
+            threading.Timer(30.0, self.printit).start()
+            with open('done', 'w') as f:
+                for itsdone in self.done:
+                    f.write(json.dumps(itsdone) + "\n")
+            with open('seenurls', 'w') as f:
+                for url in self.seen_urls:
+                    f.write(json.dumps(url) + "\n")
 
     def close(self):
         """Close resources."""
         self.session.close()
+        self.saving = False
 
     def host_okay(self, host):
         """Check if a host should be crawled.
@@ -180,7 +218,8 @@ class Crawler:
 
                 break
             except aiohttp.ClientError as client_error:
-                LOGGER.info('try %r for %r raised %r', tries, url, client_error)
+                LOGGER.info('try %r for %r raised %r',
+                            tries, url, client_error)
                 exception = client_error
 
             tries += 1
