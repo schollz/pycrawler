@@ -110,7 +110,7 @@ class Crawler:
 
     def printit(self):
         if self.saving:
-            threading.Timer(30.0, self.printit).start()
+            threading.Timer(60.0 * 60, self.printit).start()
             with open('done', 'w') as f:
                 for itsdone in self.done:
                     f.write(json.dumps(itsdone) + "\n")
@@ -120,6 +120,12 @@ class Crawler:
 
     def close(self):
         """Close resources."""
+        with open('done', 'w') as f:
+            for itsdone in self.done:
+                f.write(json.dumps(itsdone) + "\n")
+        with open('seenurls', 'w') as f:
+            for url in self.seen_urls:
+                f.write(json.dumps(url) + "\n")
         self.session.close()
         self.saving = False
 
