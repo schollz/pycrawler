@@ -111,9 +111,10 @@ class Crawler:
     def printit(self):
         if self.saving:
             threading.Timer(60.0 * 60, self.printit).start()
-            with open('done', 'w') as f:
+            with open('done', 'a') as f:
                 for itsdone in self.done:
                     f.write(json.dumps(itsdone) + "\n")
+                del self.done[:]
             with open('seenurls', 'w') as f:
                 for url in self.seen_urls:
                     f.write(json.dumps(url) + "\n")
