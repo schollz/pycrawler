@@ -67,10 +67,10 @@ class Crawler:
         self.q = Queue(loop=self.loop)
         self.count = 0
         self.seen_urls = set()
-        if os.path.exists('seenurls'):
-            with open('seenurls', 'r') as f:
-                for line in f:
-                    self.seen_urls.add(json.loads(line))
+        # if os.path.exists('seenurls'):
+        #     with open('seenurls', 'r') as f:
+        #         for line in f:
+        #             self.seen_urls.add(json.loads(line))
         self.done = []
         # if os.path.exists('done'):
         #     with open('done', 'r') as f:

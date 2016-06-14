@@ -32,7 +32,7 @@ ARGS.add_argument(
     default=4, help='Limit retries on network errors')
 ARGS.add_argument(
     '--max_tasks', action='store', type=int, metavar='N',
-    default=100, help='Limit concurrent connections')
+    default=200, help='Limit concurrent connections')
 ARGS.add_argument(
     '--exclude', action='store', metavar='REGEX',
     help='Exclude matching URLs')
