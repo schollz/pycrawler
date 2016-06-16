@@ -2,7 +2,7 @@ PYTHON3=python3.4
 
 rt:
 	echo "Generating URLS"
-	cat done | grep "/m/" | grep -v "trailers/\|pictures\|?\|quotes\|reviews\|news" | sed s/\"//g | sed s/,//g | sed 's/\[//g' | awk -F" " '{print $1}' |  sed 's/\// /g' | awk -F" " '{print "https://www.rottentomatoes.com/m/"$4}' | sort | uniq > urlsAll	
+	cat done | grep "/m/" | grep -v "trailers/\|pictures\|?\|quotes\|reviews\|news" | sed s/\"//g | sed s/,//g | sed 's/\[//g' | awk -F" " '{print $$1}' |  sed 's/\// /g' | awk -F" " '{print "https://www.rottentomatoes.com/m/"$$4}' | sort | uniq > urlsAll	
 
 aeean:
 	rm -rf done
