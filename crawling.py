@@ -121,7 +121,7 @@ class Crawler:
 
     def close(self):
         """Close resources."""
-        with open('done', 'w') as f:
+        with open('done', 'a') as f:
             for itsdone in self.done:
                 f.write(json.dumps(itsdone) + "\n")
         with open('seenurls', 'w') as f:
