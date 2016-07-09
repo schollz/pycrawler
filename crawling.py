@@ -67,6 +67,7 @@ class Crawler:
         self.q = Queue(loop=self.loop)
         self.count = 0
         self.seen_urls = set()
+        self.good_urls = set()
         # if os.path.exists('seenurls'):
         #     with open('seenurls', 'r') as f:
         #         for line in f:
@@ -196,7 +197,10 @@ class Crawler:
                     defragmented, frag = urllib.parse.urldefrag(normalized)
                     if self.url_allowed(defragmented):
                         links.add(defragmented)
-                        LOGGER.info('got url %r',defragmented)
+                        if "/m/" in defragmented:
+                            if defragmented not in self.good_urls:
+                                LOGGER.info('got url %r',defragmented)
+                                self.good_urls.add(defragmented)
 
         stat = FetchStatistic(
             url=response.url,

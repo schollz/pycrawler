@@ -1,8 +1,13 @@
 PYTHON3=python3.4
 
+rt2:
+	echo "Generating URLS"
+	cat crawl.log | grep "/m/" | grep -v "trailers/\|pictures/\|?\|quotes/\|reviews/\|news/\|forum.rottentomatoes.com" | sed "s/'//g" | awk 'NF>1{print $$NF}' |  sed 's/\// /g' | awk -F" " '{print "https://www.rottentomatoes.com/m/"$$4}' | sort | uniq > urlsAll
+	wc -l urlsAll
+
 rt:
 	echo "Generating URLS"
-	cat done | grep "/m/" | grep -v "trailers/\|pictures\|?\|quotes\|reviews\|news" | sed s/\"//g | sed s/,//g | sed 's/\[//g' | awk -F" " '{print $$1}' |  sed 's/\// /g' | awk -F" " '{print "https://www.rottentomatoes.com/m/"$$4}' | sort | uniq > urlsAll	
+	cat crawl.log | grep "/m/" | grep -v "trailers/\|pictures\|?\|quotes\|reviews\|news" | sed s/\"//g | sed s/,//g | sed 's/\[//g' | awk -F" " '{print $$1}' |  sed 's/\// /g' | awk -F" " '{print "https://www.rottentomatoes.com/m/"$$4}' | sort | uniq > urlsAll	
 
 clean:
 	rm -rf done
