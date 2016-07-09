@@ -196,6 +196,7 @@ class Crawler:
                     defragmented, frag = urllib.parse.urldefrag(normalized)
                     if self.url_allowed(defragmented):
                         links.add(defragmented)
+                        LOGGER.info('got url %r',defragmented)
 
         stat = FetchStatistic(
             url=response.url,
