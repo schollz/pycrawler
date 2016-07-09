@@ -68,7 +68,7 @@ def main():
         return
 
     levels = [logging.ERROR, logging.WARN, logging.INFO, logging.DEBUG]
-    logging.basicConfig(level=levels[min(args.level, len(levels)-1)])
+    logging.basicConfig(filename='crawl.log',level=levels[min(args.level, len(levels)-1)])
 
     if args.iocp:
         from asyncio.windows_events import ProactorEventLoop
