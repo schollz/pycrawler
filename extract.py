@@ -1,9 +1,9 @@
 import json
 a = set()
-with open('crawl.log','r') as f:
+with open('crawl.log.all','r') as f:
 	for line in f:
 		for item in line.split():
-			if 'rottentomatoes.com' in item:
+			if 'rottentomatoes.com/m/' in item:
 				item = item.replace("'","")
 				item = item.replace("?","/")
 				urlSplit = item.split('/')
@@ -12,4 +12,6 @@ with open('crawl.log','r') as f:
 
 with open("crawl.list","w") as f:
 	for item in a:
-		f.write("http://www.rottentomatoes.com/m/%s/\n" % item)
+		f.write("https://www.rottentomatoes.com/m/%s\n" % item)
+
+print("Found %d urls" % len(a))
